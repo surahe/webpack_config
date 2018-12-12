@@ -119,7 +119,7 @@ module.exports = {
     //  single：创建要为所有生成的块共享的运行时文件。
     //  multiple：为公共块创建多个运行时文件。
     // 通过将optimization.runtimeChunk设置为object，只能提供name属性，该属性代表运行时块的名称或名称工厂。
-    // 默认值为false：每个条目块嵌入运行时。
+    // 默认值为false：每个条目chunk嵌入runtime。
     runtimeChunk: {
       name: entrypoint => `runtimechunk~${entrypoint.name}`
     },

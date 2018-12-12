@@ -53,6 +53,25 @@ var config = {
         use: ['file-loader'],
       },
     ]
+  },
+  // 如何寻找模块所对应的文件
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src')
+    },
+    extensions: ['.js', '.json', '.jsx', '.css'],
+    modules: ['node_modules']
+  },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({ /* your config */ })
+    ],
+    splitChunks: {
+      chunks: 'all'
+    },
+    runtimeChunk: {
+      name: 'runtime'
+    }
   }
 }
 
