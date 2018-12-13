@@ -6,8 +6,6 @@ function resolve (dir) {
 }
 
 var config = {
-  // 基础目录，绝对路径，用于从配置中解析入口起点(entry point)和 loader，默认是当前目录
-  context: path.resolve(__dirname, 'app'),
   // 起点或是应用程序的起点入口
   entry: resolve('src/index.js'),
   // 在哪里输出它所创建的 bundles，以及如何命名这些文件
@@ -62,6 +60,7 @@ var config = {
     extensions: ['.js', '.json', '.jsx', '.css'],
     modules: ['node_modules']
   },
+  // 优化
   optimization: {
     minimizer: [
       new UglifyJsPlugin({ /* your config */ })
@@ -72,6 +71,31 @@ var config = {
     runtimeChunk: {
       name: 'runtime'
     }
+  },
+  // 配置
+  plugins: [
+    new UglifyJSPlugin({
+      sourceMap: true
+    }),
+  ],
+  // 生成以及如何生成 source map
+  devtool: 'cheap-eval-source-map',
+  // webpack-dev-server 配置
+  devServer: {
+    // 切换成 HTTPS 服务
+    https: true,
+    host: 'localhost',
+    port: 8080,
+    // 一般要与output.publicPath相同
+    publicPath: '/',
+    // http-proxy-middleware
+    proxy: {
+      '/api': 'http://localhost:3000'
+    },
+    // 启用 webpack 的模块热替换特性
+    hot: true,
+    // 打开浏览器
+    open: true
   }
 }
 
