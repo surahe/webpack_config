@@ -1,6 +1,6 @@
-const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -67,13 +67,15 @@ module.exports = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(['dist']),
-    new HtmlWebpackPlugin({
-      title: 'Production'
-    })
+    new CleanWebpackPlugin(['dist'], { 
+      root: path.resolve(__dirname, '..'),
+      dry: false // 启用删除文件
+    }),
+    new HtmlWebpackPlugin()
   ],
   output: {
     filename: '[name].bundle.js',
-    path: resolve(__dirname, 'dist')
+    path: resolve('dist'),
+    chunkFilename: '[name].bundle.js'
   }
 };

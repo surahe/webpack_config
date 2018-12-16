@@ -5,7 +5,7 @@ function resolve (dir) {
   return path.join(__dirname,  dir)
 }
 
-var config = {
+var defaults = {
   // 起点或是应用程序的起点入口
   entry: resolve('src/index.js'),
   // 在哪里输出它所创建的 bundles，以及如何命名这些文件
@@ -99,4 +99,4 @@ var config = {
   }
 }
 
-module.exports = config
+module.exports = defaults
