@@ -13,7 +13,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      '@': resolve(__dirname, 'src')
+      '@': resolve('src')
     }
   },
   module: {
@@ -22,15 +22,11 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
       },
-      // {
-      //   test: /\.(js|vue)$/,
-      //   loader: 'eslint-loader',
-      //   enforce: 'pre',
-      //   include: [resolve('src'), resolve('test')],
-      //   options: {
-      //     formatter: require('eslint-friendly-formatter')
-      //   }
-      // },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        include: [resolve('src')]
+      },
       // {
       //   test: /\.vue$/,
       //   loader: 'vue-loader',
