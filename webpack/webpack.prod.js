@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const WorkboxPlugin = require('workbox-webpack-plugin')
 const common = require('./webpack.common.js')
 const utils = require('./utils')
 const config = require('../config')
@@ -26,6 +27,12 @@ module.exports = merge(common, {
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+    new WorkboxPlugin.GenerateSW({
+      // 这些选项帮助 ServiceWorkers 快速启用
+      // 不允许遗留任何“旧的” ServiceWorkers
+      clientsClaim: true,
+      skipWaiting: true
     }),
     new webpack.HashedModuleIdsPlugin()
   ],
