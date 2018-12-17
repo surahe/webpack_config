@@ -1,6 +1,5 @@
 const path = require('path')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const WorkboxPlugin = require('workbox-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -25,17 +24,15 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src')]
+        include: [resolve('src')],
+        options: {
+          cacheDirectory: true
+        }
       },
       // {
       //   test: /\.vue$/,
       //   loader: 'vue-loader',
       //   options: vueLoaderConfig
-      // },
-      // {
-      //   test: /\.js$/,
-      //   loader: 'babel-loader',
-      //   include: [resolve('src'), resolve('test')]
       // },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -63,11 +60,12 @@ module.exports = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(['dist'], { 
-      root: path.resolve(__dirname, '..'),
-      dry: false // 启用删除文件
-    }),
-    new HtmlWebpackPlugin()
+    new WorkboxPlugin.GenerateSW({
+      // 这些选项帮助 ServiceWorkers 快速启用
+      // 不允许遗留任何“旧的” ServiceWorkers
+      clientsClaim: true,
+      skipWaiting: true
+    })
   ],
   output: {
     filename: '[name].bundle.js',

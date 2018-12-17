@@ -1,7 +1,10 @@
+const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-const WorkboxPlugin = require('workbox-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const ManifestPlugin = require('webpack-manifest-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const common = require('./webpack.common.js')
 const utils = require('./utils')
 const config = require('../config')
@@ -22,18 +25,20 @@ module.exports = merge(common, {
     runtimeChunk: 'single'
   },
   plugins: [
+    new CleanWebpackPlugin(['dist'], { 
+      root: path.resolve(__dirname, '..'),
+      dry: false // 启用删除文件
+    }),
+    new ManifestPlugin(),
     new UglifyJSPlugin({
-      sourceMap: true
+      sourceMap: true,
+      parallel: true,
+      cache: true
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
-    new WorkboxPlugin.GenerateSW({
-      // 这些选项帮助 ServiceWorkers 快速启用
-      // 不允许遗留任何“旧的” ServiceWorkers
-      clientsClaim: true,
-      skipWaiting: true
-    }),
+    new HtmlWebpackPlugin(),
     new webpack.HashedModuleIdsPlugin()
   ],
   output: {
