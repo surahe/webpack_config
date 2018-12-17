@@ -1,8 +1,11 @@
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const common = require('./webpack.common.js')
@@ -15,6 +18,12 @@ module.exports = merge(common, {
   optimization: {
     splitChunks: {
       cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.scss|css$/,
+          chunks: 'all',
+          enforce: true,
+        },
         vendor: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
@@ -22,6 +31,14 @@ module.exports = merge(common, {
         }
       }
     },
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true 
+      }),
+      new OptimizeCSSPlugin({})  // use OptimizeCSSAssetsPlugin
+    ],
     runtimeChunk: 'single'
   },
   plugins: [
@@ -30,16 +47,22 @@ module.exports = merge(common, {
       dry: false // 启用删除文件
     }),
     new ManifestPlugin(),
-    new UglifyJSPlugin({
-      sourceMap: true,
-      parallel: true,
-      cache: true
-    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
+    }),
     new HtmlWebpackPlugin(),
-    new webpack.HashedModuleIdsPlugin()
+    new webpack.HashedModuleIdsPlugin(),
+    new CopyWebpackPlugin([
+      {
+        from: utils.resolve('static'),
+        to: config.build.assetsSubDirectory,
+        ignore: ['.*']
+      }
+    ])
   ],
   output: {
     filename: utils.assetsPath('js/[name].[chunkhash].js'),

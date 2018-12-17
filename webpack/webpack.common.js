@@ -1,9 +1,8 @@
-const path = require('path')
 const WorkboxPlugin = require('workbox-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const utils = require('./utils')
+const devMode = process.env.NODE_ENV !== 'production'
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
-}
 
 module.exports = {
   entry: {
@@ -12,19 +11,32 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      '@': resolve('src')
+      '@': utils.resolve('src')
     }
   },
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader'
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader',
+          'sass-loader'
+        ]
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src')],
+        include: [utils.resolve('src')],
         options: {
           cacheDirectory: true
         }
@@ -65,11 +77,15 @@ module.exports = {
       // 不允许遗留任何“旧的” ServiceWorkers
       clientsClaim: true,
       skipWaiting: true
+    }),
+    new MiniCssExtractPlugin({
+      filename: devMode ? '[name].css' : '[name].[hash].css',
+      chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
     })
   ],
   output: {
     filename: '[name].bundle.js',
-    path: resolve('dist'),
+    path: utils.resolve('dist'),
     chunkFilename: '[name].bundle.js'
   }
 };

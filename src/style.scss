@@ -1,4 +1,8 @@
 .hello {
+  display: flex;
   color: red;
   background: url('./assets/icon.jpg');
+  .hehe {
+    display: grid;
+  }
 }
