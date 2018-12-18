@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'production'
+
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
@@ -8,11 +10,13 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
+const smp = new SpeedMeasurePlugin()
 const common = require('./webpack.common.js')
 const utils = require('./utils')
 const config = require('../config')
 
-module.exports = merge(common, {
+var webpackConfig = merge(common, {
   mode: 'production',
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   optimization: {
@@ -50,11 +54,15 @@ module.exports = merge(common, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css'
+    new HtmlWebpackPlugin({
+      filename: config.build.index,
+      template: utils.resolve('src/index.html'),
+      inject: true
     }),
-    new HtmlWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: utils.assetsPath('css/[name].[contenthash].css'),
+      chunkFilename: utils.assetsPath('css/[id].[contenthash].css')
+    }),
     new webpack.HashedModuleIdsPlugin(),
     new CopyWebpackPlugin([
       {
@@ -69,3 +77,10 @@ module.exports = merge(common, {
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   }
 });
+
+if (config.build.bundleAnalyzerReport) {
+  var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+  webpackConfig.plugins.push(new BundleAnalyzerPlugin())
+}
+
+module.exports = smp.wrap(webpackConfig)
