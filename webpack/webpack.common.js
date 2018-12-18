@@ -1,6 +1,6 @@
-const WorkboxPlugin = require('workbox-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const utils = require('./utils')
+const config = require('../config')
 const devMode = process.env.NODE_ENV !== 'production'
 
 
@@ -10,11 +10,16 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
+    modules: [utils.resolve('node_modules')], // 指定 node_modules 的绝对路径，避免向上递归搜索
     alias: {
       '@': utils.resolve('src')
     }
   },
   module: {
+    // 防止 webpack 解析那些任何与给定正则表达式相匹配的文件，忽略大型的 library 可以提高构建性能
+    noParse: function(content) {
+      return /lodash/.test(content) // content为文件绝对路径
+    },
     rules: [
       {
         test: /\.css$/,
@@ -56,8 +61,9 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [utils.resolve('src'), utils.resolve('test')],
+        exclude: utils.resolve('node_modules'),
         options: {
-          cacheDirectory: true
+          cacheDirectory: true // 缓存转换结果
         }
       },
       // {
@@ -91,17 +97,12 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new WorkboxPlugin.GenerateSW({
-      // 这些选项帮助 ServiceWorkers 快速启用
-      // 不允许遗留任何“旧的” ServiceWorkers
-      clientsClaim: true,
-      skipWaiting: true
-    })
-  ],
   output: {
     filename: '[name].bundle.js',
     path: utils.resolve('dist'),
-    chunkFilename: '[name].bundle.js'
+    chunkFilename: '[name].bundle.js',
+    publicPath: process.env.NODE_ENV === 'production'
+      ? config.build.assetsPublicPath
+      : config.dev.assetsPublicPath,
   }
 };
