@@ -5,16 +5,16 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/', // 静态资源公共路径，可以填CDN地址
     productionSourceMap: false,
-    // Run the build command with an extra argument to
-    // View the bundle analyzer report after build finishes:
-    // `npm run build --report`
-    // Set to `true` or `false` to always turn it on or off
+    // 执行 `npm run build --report` 可以使用 webpack-bundle-analyzer
     bundleAnalyzerReport: process.env.npm_config_report
   },
   dev: {
+    useIP: false, // 是否允许服务器外部访问（PWA在开发环境只允许localhost）
+    port: 8080,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
+    proxyTable: {}
   }
 }
