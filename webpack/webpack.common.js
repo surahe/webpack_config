@@ -24,6 +24,15 @@ module.exports = {
     },
     rules: [
       {
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        include: [utils.resolve('src'), utils.resolve('test')],
+        options: {
+          formatter: require('eslint-friendly-formatter')
+        }
+      },
+      {
         test: /\.(scss|css)$/,
         use: [
           devMode ? 'vue-style-loader': {
@@ -43,15 +52,6 @@ module.exports = {
           'sass-loader'
         ]
       },
-      // {
-      //   test: /\.(js|vue)$/,
-      //   loader: 'eslint-loader',
-      //   enforce: 'pre',
-      //   include: [utils.resolve('src'), utils.resolve('test')],
-      //   options: {
-      //     formatter: require('eslint-friendly-formatter')
-      //   }
-      // },
       {
         test: /\.js$/,
         loader: 'babel-loader',
