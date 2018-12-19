@@ -12,6 +12,7 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
 const WorkboxPlugin = require('workbox-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const smp = new SpeedMeasurePlugin()
 const common = require('./webpack.common.js')
 const utils = require('./utils')
@@ -84,13 +85,7 @@ var webpackConfig = merge(common, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ]),
-    new WorkboxPlugin.GenerateSW({
-      // 这些选项帮助 ServiceWorkers 快速启用
-      // 不允许遗留任何“旧的” ServiceWorkers
-      clientsClaim: true,
-      skipWaiting: true
-    })
+    ])
   ],
   output: {
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
@@ -98,9 +93,19 @@ var webpackConfig = merge(common, {
   }
 });
 
+if (config.build.usePWA) {
+  webpackConfig.plugins.push(
+    new WorkboxPlugin.GenerateSW({
+      // 这些选项帮助 ServiceWorkers 快速启用
+      // 不允许遗留任何“旧的” ServiceWorkers
+      clientsClaim: true,
+      skipWaiting: true
+    })
+  )
+}
+
 if (config.build.bundleAnalyzerReport) {
-  var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 
-module.exports = smp.wrap(webpackConfig)
+module.exports = config.build.showSpeed ? smp.wrap(webpackConfig) : webpackConfig

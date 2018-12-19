@@ -8,7 +8,9 @@ module.exports = {
     assetsPublicPath: '/', // 静态资源公共路径，可以填CDN地址
     productionSourceMap: false,
     // 执行 `npm run build --report` 可以使用 webpack-bundle-analyzer
-    bundleAnalyzerReport: process.env.npm_config_report
+    bundleAnalyzerReport: process.env.npm_config_report,
+    showSpeed: false,
+    usePWA: false
   },
   dev: {
     useIP: false, // 是否允许服务器外部访问（PWA在开发环境只允许localhost）
