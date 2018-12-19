@@ -4,7 +4,6 @@ const utils = require('./utils')
 const config = require('../config')
 const devMode = process.env.NODE_ENV !== 'production'
 
-
 module.exports = {
   entry: {
     app: './src/main.js'
@@ -35,9 +34,9 @@ module.exports = {
       {
         test: /\.(scss|css)$/,
         use: [
-          devMode ? 'vue-style-loader': {
-            loader:MiniCssExtractPlugin.loader,
-            options:{
+          devMode ? 'vue-style-loader' : {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
               publicPath: '../../'
             }
           }, {

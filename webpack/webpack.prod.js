@@ -10,7 +10,7 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
 const WorkboxPlugin = require('workbox-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const smp = new SpeedMeasurePlugin()
@@ -24,6 +24,7 @@ var webpackConfig = merge(common, {
   optimization: {
     splitChunks: {
       chunks: 'all',
+      // 参考自 https://juejin.im/post/5b5d6d6f6fb9a04fea58aabc
       cacheGroups: {
         // styles: {
         //   name: 'styles',
@@ -31,10 +32,23 @@ var webpackConfig = merge(common, {
         //   chunks: 'all',
         //   enforce: true,
         // },
-        vendor: {
+        libs: { // 基础类库
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all'
+          name: 'chunk-libs',
+          priority: 10,
+          chunks: 'initial'
+        },
+        elementUI: { // UI组件
+          name: 'chunk-elementUI', // 单独将 elementUI 拆包
+          priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
+          test: /[\\/]node_modules[\\/]element-ui[\\/]/
+        },
+        commons: { // 自定义共用组件/函数
+          name: 'chunk-commons',
+          test: utils.resolve('components'), // 可自定义拓展你的规则
+          minChunks: 2, // 最小共用次数
+          priority: 5,
+          reuseExistingChunk: true
         }
       }
     },
@@ -42,7 +56,7 @@ var webpackConfig = merge(common, {
       new UglifyJsPlugin({
         cache: true,
         parallel: true,
-        sourceMap: true 
+        sourceMap: true
       }),
       new OptimizeCSSPlugin({})
     ],
@@ -53,7 +67,7 @@ var webpackConfig = merge(common, {
     runtimeChunk: 'single'
   },
   plugins: [
-    new CleanWebpackPlugin(['dist'], { 
+    new CleanWebpackPlugin(['dist'], {
       root: path.resolve(__dirname, '..'),
       dry: false // 启用删除文件
     }),
@@ -91,7 +105,7 @@ var webpackConfig = merge(common, {
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   }
-});
+})
 
 if (config.build.usePWA) {
   webpackConfig.plugins.push(

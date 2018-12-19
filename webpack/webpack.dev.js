@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'development'
 
-const webpack = require('webpack');
-const merge = require('webpack-merge');
+const webpack = require('webpack')
+const merge = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const internalIp = require('internal-ip')
@@ -29,4 +29,4 @@ module.exports = merge(common, {
     }),
     new FriendlyErrorsPlugin()
   ]
-});
+})
