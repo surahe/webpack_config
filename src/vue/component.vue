@@ -1,0 +1,13 @@
+<template>
+  <div :class="$style.container">
+    <slot />
+  </div>
+</template>
+
+<style module lang="scss" >
+  .container {
+    width: 100px;
+    height: 100px;
+    background: blue;
+  }
+</style>
