@@ -4,9 +4,29 @@ const utils = require('./utils')
 const config = require('../config')
 const devMode = process.env.NODE_ENV !== 'production'
 
+const createLintingRule = () => ({
+  test: /\.(js|vue)$/,
+  loader: 'eslint-loader',
+  enforce: 'pre',
+  include: [utils.resolve('src'), utils.resolve('test')],
+  options: {
+    formatter: require('eslint-friendly-formatter'),
+    emitWarning: !config.dev.showEslintErrorsInOverlay
+  }
+})
+
 module.exports = {
+  context: utils.resolve(''),
   entry: {
     app: './src/main.js'
+  },
+  output: {
+    path: utils.resolve('dist'),
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
+    publicPath: process.env.NODE_ENV === 'production'
+      ? config.build.assetsPublicPath
+      : config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -22,15 +42,7 @@ module.exports = {
       return /lodash/.test(content) // content为文件绝对路径
     },
     rules: [
-      {
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        include: [utils.resolve('src'), utils.resolve('test')],
-        options: {
-          formatter: require('eslint-friendly-formatter')
-        }
-      },
+      ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
         test: /\.(scss|css)$/,
         use: [
@@ -54,7 +66,11 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [utils.resolve('src'), utils.resolve('test')],
+        include: [
+          utils.resolve('src'),
+          utils.resolve('test'),
+          utils.resolve('node_modules/webpack-dev-server/client')
+        ],
         exclude: file => (
           /node_modules/.test(file) &&
           !/\.vue\.js/.test(file)
@@ -102,12 +118,16 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin()
   ],
-  output: {
-    filename: '[name].bundle.js',
-    path: utils.resolve('dist'),
-    chunkFilename: '[name].bundle.js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath,
+  node: {
+    // prevent webpack from injecting useless setImmediate polyfill because Vue
+    // source contains it (although only uses it if it's native).
+    setImmediate: false,
+    // prevent webpack from injecting mocks to Node native modules
+    // that does not make sense for the client
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    child_process: 'empty'
   }
-};
+}
