@@ -1,8 +1,7 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
 const utils = require('./utils')
 const config = require('../config')
-const devMode = process.env.NODE_ENV !== 'production'
 
 const createLintingRule = () => ({
   test: /\.(js|vue)$/,
@@ -43,26 +42,6 @@ module.exports = {
     },
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
-      {
-        test: /\.(scss|css)$/,
-        use: [
-          devMode ? 'vue-style-loader' : {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '../../'
-            }
-          }, {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 2,
-              modules: true,
-              localIdentName: '[local]_[hash:base64:8]'
-            }
-          },
-          'postcss-loader',
-          'sass-loader'
-        ]
-      },
       {
         test: /\.js$/,
         loader: 'babel-loader',
