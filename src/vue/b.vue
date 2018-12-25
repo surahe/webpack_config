@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.flexbox">
+  <div class="flexbox">
     <TestComponent>bbb</TestComponent>
   </div>
 </template>

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <RouterView />
     <TestA />
     <TestB />
   </div>

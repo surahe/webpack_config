@@ -1,11 +1,17 @@
 <template>
-  <div :class="$style.flexbox">
+  <div class="flexbox1">
     <TestComponent>aaa</TestComponent>
+    <div>
+      <img src="../assets/icon.jpg">
+    </div>
   </div>
 </template>
 
 <script>
 import TestComponent from './component'
+
+var url = process.env.BASE_API
+console.log(url)
 export default {
   components: {
     TestComponent
@@ -14,7 +20,8 @@ export default {
 </script>
 
 <style module lang="scss">
-.flexbox {
-  display: flex;
+.flexbox1 {
+  color: red;
+  background: url('../assets/upload-logo.png');
 }
 </style>
