@@ -1,7 +1,9 @@
+'use strict'
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const utils = require('./utils')
 const config = require('../config')
+const vueLoaderConfig = require('./vue-loader.conf')
 
 const createLintingRule = () => ({
   test: /\.(js|vue)$/,
@@ -61,12 +63,7 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
-          video: ['src', 'poster'],
-          source: 'src',
-          img: 'src',
-          image: 'xlink:href'
-        }
+        options: vueLoaderConfig
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

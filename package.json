@@ -1,9 +1,5 @@
 {
   "name": "webpack-test",
-  "sideEffects": [
-    "*.scss",
-    "*.css"
-  ],
   "version": "1.0.0",
   "description": "",
   "main": "a.js",
@@ -17,12 +13,14 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.2.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
     "autoprefixer": "^9.4.3",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "clean-webpack-plugin": "^1.0.0",
+    "compression-webpack-plugin": "^2.0.0",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.0.0",
     "eslint": "^5.10.0",
@@ -38,10 +36,12 @@
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",
     "http-server": "^0.11.1",
+    "install": "^0.12.2",
     "internal-ip": "^3.0.1",
     "mini-css-extract-plugin": "^0.5.0",
     "node-notifier": "^5.3.0",
     "node-sass": "^4.10.0",
+    "npm": "^6.5.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "portfinder": "^1.0.20",
     "postcss-loader": "^3.0.0",
@@ -65,7 +65,8 @@
   "dependencies": {
     "@babel/runtime": "^7.2.0",
     "lodash": "^4.17.11",
-    "vue": "^2.5.21"
+    "vue": "^2.5.21",
+    "vue-router": "^3.0.2"
   },
   "browserslist": [
     "iOS >= 7",

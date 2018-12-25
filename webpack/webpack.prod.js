@@ -1,12 +1,11 @@
-process.env.NODE_ENV = 'production'
-
+'use strict'
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -14,24 +13,32 @@ const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
 const WorkboxPlugin = require('workbox-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const smp = new SpeedMeasurePlugin()
+
 const common = require('./webpack.common.js')
 const utils = require('./utils')
 const config = require('../config')
 
+// For NamedChunksPlugin
+const seen = new Set()
+const nameLength = 4
+
 var webpackConfig = merge(common, {
   mode: 'production',
-  devtool: config.build.productionSourceMap ? '#source-map' : false,
+  module: {
+    rules: utils.styleLoaders({
+      sourceMap: config.build.productionSourceMap,
+      extract: true,
+      usePostCSS: true,
+      cssModules: config.build.cssModules,
+      localIdentName: '[name]__[local]___[hash:base64:5]'
+    })
+  },
+  devtool: config.build.productionSourceMap ? config.build.devtool : false,
   optimization: {
     splitChunks: {
       chunks: 'all',
       // 参考自 https://juejin.im/post/5b5d6d6f6fb9a04fea58aabc
       cacheGroups: {
-        // styles: {
-        //   name: 'styles',
-        //   test: /\.scss|css$/,
-        //   chunks: 'all',
-        //   enforce: true,
-        // },
         libs: { // 基础类库
           test: /[\\/]node_modules[\\/]/,
           name: 'chunk-libs',
@@ -54,11 +61,13 @@ var webpackConfig = merge(common, {
     },
     minimizer: [
       new UglifyJsPlugin({
+        sourceMap: config.build.productionSourceMap,
         cache: true,
-        parallel: true,
-        sourceMap: true
+        parallel: true
       }),
-      new OptimizeCSSPlugin({})
+      // Compress extracted CSS. We are using this plugin so that possible
+      // duplicated CSS from different components can be deduped.
+      new OptimizeCSSAssetsPlugin()
     ],
     /*
      * webpack 就会把 chunk 文件名全部存到一个单独的 chunk 中，
@@ -73,25 +82,46 @@ var webpackConfig = merge(common, {
     }),
     new ManifestPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
+      'process.env': require('../config/prod.env')
     }),
+    // generate dist index.html with correct asset hash for caching.
+    // you can customize output by editing /index.html
+    // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: config.build.index,
       template: utils.resolve('src/index.html'),
-      inject: true
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+        // more options:
+        // https://github.com/kangax/html-minifier#options-quick-reference
+      }
     }),
+    // extract css into its own file
     new MiniCssExtractPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash].css'),
-      chunkFilename: utils.assetsPath('css/[id].[contenthash].css')
+      filename: utils.assetsPath('css/[name].[contenthash:8].css'),
+      chunkFilename: utils.assetsPath('css/[name].[contenthash:8].css')
     }),
-    /*
-      使用文件路径的 hash 作为 moduleId。
-      虽然我们使用 [chunkhash] 作为 chunk 的输出名，但仍然不够。
-      因为 chunk 内部的每个 module 都有一个 id，webpack 默认使用递增的数字作为 moduleId。
-      如果引入了一个新文件或删掉一个文件，可能会导致其他文件的 moduleId 也发生改变，
-      那么受影响的 module 所在的 chunk 的 [chunkhash] 就会发生改变，导致缓存失效。
-      因此使用文件路径的 hash 作为 moduleId 来避免这个问题。
-    */
+    // keep chunk.id stable when chunk has no name
+    new webpack.NamedChunksPlugin(chunk => {
+      if (chunk.name) {
+        return chunk.name
+      }
+      const modules = Array.from(chunk.modulesIterable)
+      if (modules.length > 1) {
+        const hash = require('hash-sum')
+        const joinedHash = hash(modules.map(m => m.id).join('_'))
+        let len = nameLength
+        while (seen.has(joinedHash.substr(0, len))) len++
+        seen.add(joinedHash.substr(0, len))
+        return `chunk-${joinedHash.substr(0, len)}`
+      } else {
+        return modules[0].id
+      }
+    }),
+    // keep module.id stable when vender modules does not change
     new webpack.HashedModuleIdsPlugin(),
     new CopyWebpackPlugin([
       {
@@ -102,8 +132,9 @@ var webpackConfig = merge(common, {
     ])
   ],
   output: {
+    path: config.build.assetsRoot,
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+    chunkFilename: utils.assetsPath('js/[name].[chunkhash].js')
   }
 })
 
@@ -114,6 +145,22 @@ if (config.build.usePWA) {
       // 不允许遗留任何“旧的” ServiceWorkers
       clientsClaim: true,
       skipWaiting: true
+    })
+  )
+}
+
+if (config.build.productionGzip) {
+  const CompressionWebpackPlugin = require('compression-webpack-plugin')
+
+  webpackConfig.plugins.push(
+    new CompressionWebpackPlugin({
+      filename: '[path].gz[query]',
+      algorithm: 'gzip',
+      test: new RegExp(
+        '\\.(' + config.build.productionGzipExtensions.join('|') + ')$'
+      ),
+      threshold: 10240,
+      minRatio: 0.8
     })
   )
 }
