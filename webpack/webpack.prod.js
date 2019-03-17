@@ -29,7 +29,7 @@ var webpackConfig = merge(common, {
       sourceMap: config.build.productionSourceMap,
       extract: true,
       usePostCSS: true,
-      cssModules: config.build.cssModules,
+      cssModules: config.public.cssModules,
       localIdentName: '[name]__[local]___[hash:base64:5]'
     })
   },

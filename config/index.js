@@ -1,6 +1,16 @@
 var path = require('path')
 
 module.exports = {
+  public: {
+    cssModules: false, // 是否使用CSS Modules (https://webpack.docschina.org/loaders/css-loader/#modules)
+    // 公共css文件路径
+    cssPath: '../src/assets/scss',
+    // 公共css文件名称
+    cssList: [
+      '_variable.scss',
+      '_mixin.scss'
+    ]
+  },
   build: {
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
@@ -76,7 +86,6 @@ module.exports = {
     // just be aware of this issue when enabling this option.
     cssSourceMap: false,
 
-    cssModules: false, // 是否使用CSS Modules (https://webpack.docschina.org/loaders/css-loader/#modules)
     useIP: false // 是否允许服务器外部访问（PWA在开发环境只允许localhost）
   }
 }

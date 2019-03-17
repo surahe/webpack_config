@@ -55,6 +55,18 @@ exports.cssLoaders = function(options) {
           sourceMap: options.sourceMap
         })
       })
+      // 官网说也支持less,post-css
+      // https://github.com/shakacode/sass-resources-loader/issues/31
+      if (loader === 'sass') {
+        loaders.push({
+          loader: 'sass-resources-loader',
+          options: {
+            // 必须为绝对路径
+            // https://github.com/shakacode/sass-resources-loader/issues/60
+            resources: config.public.cssList.map((item) => path.resolve(__dirname, config.public.cssPath, item))
+          }
+        })
+      }
     }
 
     return loaders

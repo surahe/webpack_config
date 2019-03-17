@@ -20,7 +20,7 @@ const devWebpackConfig = merge(common, {
     rules: utils.styleLoaders({
       sourceMap: config.dev.cssSourceMap,
       usePostCSS: true,
-      cssModules: config.dev.cssModules,
+      cssModules: config.public.cssModules,
       localIdentName: '[name]__[local]___[hash:base64:5]'
     })
   },

@@ -1,0 +1,5 @@
+@mixin break-line () {
+  word-break: break-all; // ie hack
+  word-break: break-word;
+  word-wrap: break-word;
+}
