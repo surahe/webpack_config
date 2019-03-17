@@ -1,14 +1,44 @@
 <template>
   <div class="ts-textarea-wrapper">
-    <textarea class="ts-textarea" id="tsTextarea" cols="30" rows="8"></textarea>
+    <textarea
+      id="tsTextarea"
+      class="ts-textarea"
+      cols="30"
+      rows="8"
+    />
     <div class="text-num-container">
-      <span class="textarea-input-length" id="textareaInputLength"></span> / <span class="textarea-max-length" id="textareaMaxLength"></span>
+      <span
+        id="textareaInputLength"
+        class="textarea-input-length"
+      /> /
+      <span
+        id="textareaMaxLength"
+        class="textarea-max-length"
+      />
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  beforeCreate() {
+    console.log('async2 beforeCreat')
+  },
+  created() {
+    console.log('async2 created')
+  },
+  beforeMount() {
+    console.log('async2 beforeMount')
+  },
+  mounted() {
+    console.log('async2 mounted')
+  },
+  beforeDestroy() {
+    console.log('async2 beforeDestroy')
+  },
+  destroyed() {
+    console.log('async2 destroyed')
+  }
 }
 </script>
 
@@ -57,8 +87,5 @@ export default {
     opacity: 100%;
     transform: translate3d(0, 0, 0);
   }
-}
-
-.transition-slide-down {
 }
 </style>

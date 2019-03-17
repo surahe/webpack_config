@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style module lang="scss" >
+<style lang="scss" >
   .container {
     width: 100px;
     height: 100px;

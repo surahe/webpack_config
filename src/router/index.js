@@ -4,10 +4,12 @@ import Router from 'vue-router'
 Vue.use(Router)
 export const constantRouterMap = [
   {
+    name: 'a',
     path: '/async',
     component: () => import('@/vue/async')
   },
   {
+    name: 'b',
     path: '/async2',
     component: () => import('@/vue/async2')
   }
