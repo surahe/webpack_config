@@ -13,6 +13,7 @@ const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
 const WorkboxPlugin = require('workbox-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const smp = new SpeedMeasurePlugin()
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 
 const common = require('./webpack.common.js')
 const utils = require('./utils')
@@ -129,7 +130,13 @@ var webpackConfig = merge(common, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+    // 注意一定要在HtmlWebpackPlugin之后引用
+    // inline 的name 和你 runtimeChunk 的 name保持一致
+    new ScriptExtHtmlWebpackPlugin({
+      //`runtime` must same as runtimeChunk name. default is `runtime`
+      inline: /runtime\..*\.js$/
+    })
   ],
   output: {
     path: config.build.assetsRoot,
