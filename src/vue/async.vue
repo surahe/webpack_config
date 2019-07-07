@@ -41,33 +41,39 @@ export default {
 .bottom-option {
   text-align: center;
   background: $blue;
-  @include break-line();
+
   button {
     width: 120px;
     height: 42px;
     padding: 8px 0;
-    color: blue;
+    border: 1px solid blue;
+    border-radius: 20px;
     font-size: 17px;
     line-height: 24px;
     text-align: center;
-    border: 1px solid blue;
-    border-radius: 20px;
+    color: blue;
     cursor: pointer;
+
     &.confirm {
       margin-left: 20px;
+      color: #fff;
       background: blue;
-      color: #fff;
     }
+
     &:hover {
-      background: #003B8B;
       color: #fff;
+      background: #003b8b;
     }
   }
+
   .flexbox1 {
     color: darkblue;
   }
+
   .flexbox1 /deep/ .icon {
     background: black;
   }
+
+  @include break-line();
 }
 </style>

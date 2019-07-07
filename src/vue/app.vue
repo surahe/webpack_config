@@ -79,6 +79,7 @@ export default {
 <style lang="scss">
 .red {
   color: red;
+
   .bold {
     font-weight: bold;
   }

@@ -1,5 +1,7 @@
 @mixin break-line () {
+  /* stylelint-disable order/properties-order,declaration-block-no-duplicate-properties */
   word-break: break-all; // ie hack
   word-break: break-word;
   word-wrap: break-word;
+  /* stylelint-enable order/properties-order,declaration-block-no-duplicate-properties */
 }
