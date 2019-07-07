@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config ./webpack/webpack.dev.js",
     "build": "webpack --config ./webpack/webpack.prod.js",
-    "start": "http-server dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "http-server dist"
   },
   "author": "",
   "license": "ISC",
@@ -51,6 +50,11 @@
     "sass-resources-loader": "^2.0.0",
     "speed-measure-webpack-plugin": "^1.2.3",
     "style-loader": "^0.23.1",
+    "stylelint": "^10.1.0",
+    "stylelint-config-standard": "^18.3.0",
+    "stylelint-order": "^3.0.0",
+    "stylelint-scss": "^3.9.0",
+    "stylelint-webpack-plugin": "^0.10.5",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "url-loader": "^1.1.2",
     "vue-eslint-parser": "^4.0.3",

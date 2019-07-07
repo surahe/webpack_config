@@ -1,6 +1,7 @@
 'use strict'
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const StyleLintPlugin = require('stylelint-webpack-plugin')
 // const Dashboard = require('webpack-dashboard');
 // const DashboardPlugin = require('webpack-dashboard/plugin')
 // const dashboard = new Dashboard()
@@ -97,6 +98,11 @@ module.exports = {
   },
   plugins: [
     // new DashboardPlugin(dashboard.setData),
+    new StyleLintPlugin({
+      'files': ['src/**/*.{html,vue,css,sass,scss}'],
+      'fix': false,
+      'cache': true
+    }),
     new ProgressBarPlugin(),
     new VueLoaderPlugin()
   ],
