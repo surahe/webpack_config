@@ -1,8 +1,8 @@
 'use strict'
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 // const Dashboard = require('webpack-dashboard');
 // const DashboardPlugin = require('webpack-dashboard/plugin')
-// const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 // const dashboard = new Dashboard()
 
 const utils = require('./utils')
@@ -97,7 +97,7 @@ module.exports = {
   },
   plugins: [
     // new DashboardPlugin(dashboard.setData),
-    // new ProgressBarPlugin(),
+    new ProgressBarPlugin(),
     new VueLoaderPlugin()
   ],
   node: {
